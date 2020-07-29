@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/cpclienthours/addhours</path>
+    <page_callback>CRM_Cpclienthours_Form_Addhours</page_callback>
+    <title>Enter Client Hours</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>
