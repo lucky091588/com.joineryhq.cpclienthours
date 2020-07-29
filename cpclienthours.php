@@ -32,54 +32,6 @@ function cpclienthours_civicrm_links($op, $objectName, $objectId, &$links, &$mas
 }
 
 /**
- * Implements hook_civicrm_pageRun().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_pageRun/
- */
-function cpclienthours_civicrm_pageRun(&$page) {
-  $pageName = $page->getVar('_name');
-  if (
-    $pageName == 'CRM_Admin_Page_Options'
-    && $page::$_gName == 'cpclienthours_hours_per_role'
-  ) {
-    // Add JS to manipulate the page.
-    CRM_Core_Resources::singleton()->addScriptFile('com.joineryhq.cpclienthours', 'js/CRM_Admin_Page_Options.js');
-  }
-}
-
-/**
- * Implements hook_civicrm_buildForm().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_buildForm/
- */
-function cpclienthours_civicrm_buildForm($formName, &$form) {
-  if (
-    $formName == 'CRM_Admin_Form_Options'
-    && $form->getVar('_gName') == 'cpclienthours_hours_per_role'
-    && (
-      $form->_action == CRM_Core_Action::BROWSE
-      || $form->_action == CRM_Core_Action::ADD
-      || $form->_action == CRM_Core_Action::UPDATE
-    )
-  ) {
-
-    // Replace the 'description' textarea with a 'description' text input,
-    // labeled 'Hours', and required,
-    $form->removeElement('description');
-    $form->add('text', 'description', E::ts('Hours'), array(), TRUE);
-
-    // Add js and css.
-    CRM_Core_Resources::singleton()->addVars('cpclienthours', $vars);
-    CRM_Core_Resources::singleton()->addStyleFile('com.joineryhq.cpclienthours', 'css/CRM_Admin_Form_Options.css');
-    CRM_Core_Resources::singleton()->addScriptFile('com.joineryhq.cpclienthours', 'js/CRM_Admin_Form_Options.js');
-
-    // Modify some elements directly.
-    $form->getElement('is_active')->freeze();
-    $form->getElement('weight')->freeze();
-  }
-}
-
-/**
  * Implements hook_civicrm_config().
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_config/
