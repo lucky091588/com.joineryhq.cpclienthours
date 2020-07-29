@@ -23,8 +23,8 @@ class CRM_Cpclienthours_Form_Addhours extends CRM_Core_Form {
     ));
     $helpTypeOptions = CRM_Core_BAO_OptionValue::getOptionValuesAssocArray($helpTypeOptionGroupId);
 
-    // Get all individuals with current 'team/volunteer' relationships, noting
-    //   Service Type for each.
+    // Get all individuals with current 'team/client' relationships, noting
+    // Service Type for each.
     $relationshipTypeId = civicrm_api3('relationshipType', 'getvalue', array(
       'name_a_b' => 'Has_team_client',
       'return' => 'id',
@@ -46,7 +46,7 @@ class CRM_Cpclienthours_Form_Addhours extends CRM_Core_Form {
     $defaultValues = array();
     foreach ($relationships['values'] as $relationship) {
       if ($relationship['api.Contact.getSingle']['is_deceased']) {
-        // Volunteer is deceased; omit them.
+        // Client is deceased; omit them.
         continue;
       }
       $clientCid = $relationship['api.Contact.getSingle']['id'];
@@ -56,10 +56,14 @@ class CRM_Cpclienthours_Form_Addhours extends CRM_Core_Form {
       $row['hoursElementName'] = "hours_{$clientCid}";
       $row['helpTypeElementName'] = "helpType_{$clientCid}";
       $this->add(
-        'text', // field type
-        $row['hoursElementName'] , // field name
-        ts('Hours'), // field label
-        TRUE // is required
+        // field type
+        'text',
+        // field name
+        $row['hoursElementName'] ,
+        // field label
+        ts('Hours'),
+        // is required
+        TRUE
       );
       $this->add(
         'select',
@@ -69,7 +73,7 @@ class CRM_Cpclienthours_Form_Addhours extends CRM_Core_Form {
         TRUE
       );
 
-      $defaultValues[$row['hoursElementName']] = 0;
+      $defaultValues[$row['hoursElementName']] = 3;
       $defaultValues[$row['helpTypeElementName']] = 'HC';
       $sortRows[] = $row['sortName'];
       $rows[] = $row;
@@ -82,7 +86,8 @@ class CRM_Cpclienthours_Form_Addhours extends CRM_Core_Form {
 
     // Add "service date" field, defaulting to current date.
     $attributes = array(
-      'class' => 'dateplugin' // this css class prevents the datepicker from being autofocused on popup load
+      // this css class prevents the datepicker from being autofocused on popup load
+      'class' => 'dateplugin'
     );
     $this->add('datepicker', 'service_date', ts('Service date'), $attributes, TRUE, ['time' => FALSE]);
     $defaultValues['service_date'] = CRM_Utils_Date::getToday();
