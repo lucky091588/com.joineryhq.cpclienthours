@@ -44,6 +44,25 @@ class CRM_Cpclienthours_Form_Addhours extends CRM_Core_Form {
     $rows = array();
     $sortRows = array();
     $defaultValues = array();
+
+    // Adding default hours for certain teams
+    $teamDetails = civicrm_api3('contact', 'getSingle', array('id' => $this->teamCid));
+    $teamNickName = $teamDetails['nick_name'];
+    $defaultHours = 0;
+    $defaultHealthType = 'HC';
+
+    // Default Hours and Help Type processing
+    $regex = "/[^0-9]*/";
+    $nickNameMatch = preg_match($regex, $teamNickName, $match);
+    $firstChar = mb_substr($match[0], 0, 1);
+    $firstTwoChar = mb_substr($match[0], 0, 2);
+    if($firstChar === 'Z') {
+      $defaultHours = 3.5;
+    } else if ($firstTwoChar === 'CG') {
+      $defaultHours = 1.5;
+      $defaultHealthType = 'SE';
+    }
+
     foreach ($relationships['values'] as $relationship) {
       if ($relationship['api.Contact.getSingle']['is_deceased']) {
         // Client is deceased; omit them.
@@ -73,8 +92,8 @@ class CRM_Cpclienthours_Form_Addhours extends CRM_Core_Form {
         TRUE
       );
 
-      $defaultValues[$row['hoursElementName']] = 3;
-      $defaultValues[$row['helpTypeElementName']] = 'HC';
+      $defaultValues[$row['hoursElementName']] = $defaultHours;
+      $defaultValues[$row['helpTypeElementName']] = $defaultHealthType;
       $sortRows[] = $row['sortName'];
       $rows[] = $row;
 
@@ -106,7 +125,7 @@ class CRM_Cpclienthours_Form_Addhours extends CRM_Core_Form {
 
     $this->setDefaults($defaultValues);
 
-    $this->assign('team', civicrm_api3('contact', 'getSingle', array('id' => $this->teamCid)));
+    $this->assign('team', $teamDetails);
 
     CRM_Core_Resources::singleton()->addScriptFile('com.joineryhq.cpclienthours', 'js/CRM_Cpclienthours_Form_Addhours.js', 1000, 'page-footer');
     parent::buildQuickForm();
