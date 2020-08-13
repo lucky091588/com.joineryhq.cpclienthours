@@ -46,16 +46,14 @@ class CRM_Cpclienthours_Form_Addhours extends CRM_Core_Form {
     $defaultValues = array();
 
     // Adding default hours for certain teams
-    $teamDetails = civicrm_api3('contact', 'getSingle', array('id' => $this->teamCid));
-    $teamNickName = $teamDetails['nick_name'];
+    $teamContact = civicrm_api3('contact', 'getSingle', array('id' => $this->teamCid));
+    $teamNickName = $teamContact['nick_name'];
     $defaultHours = 0;
     $defaultHealthType = 'HC';
 
     // Default Hours and Help Type processing
-    $regex = "/[^0-9]*/";
-    $nickNameMatch = preg_match($regex, $teamNickName, $match);
-    $firstChar = mb_substr($match[0], 0, 1);
-    $firstTwoChar = mb_substr($match[0], 0, 2);
+    $firstChar = mb_substr($teamNickName, 0, 1);
+    $firstTwoChar = mb_substr($teamNickName, 0, 2);
     if($firstChar === 'Z') {
       $defaultHours = 3.5;
     } else if ($firstTwoChar === 'CG') {
@@ -125,7 +123,7 @@ class CRM_Cpclienthours_Form_Addhours extends CRM_Core_Form {
 
     $this->setDefaults($defaultValues);
 
-    $this->assign('team', $teamDetails);
+    $this->assign('team', $teamContact);
 
     CRM_Core_Resources::singleton()->addScriptFile('com.joineryhq.cpclienthours', 'js/CRM_Cpclienthours_Form_Addhours.js', 1000, 'page-footer');
     parent::buildQuickForm();
