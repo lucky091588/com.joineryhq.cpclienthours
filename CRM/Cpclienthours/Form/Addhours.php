@@ -147,7 +147,7 @@ class CRM_Cpclienthours_Form_Addhours extends CRM_Core_Form {
         'target_id' => $this->teamCid,
         'assignee_id' => $clientCid,
         'activity_date_time' => $values['service_date'],
-        'activity_type_id' => 'Service hours',
+        'activity_type_id' => 'Client Service Hours',
         'subject' => ts('Team service hours (batch entry)'),
         "custom_{$isLegacyCustomFieldId}" => 0,
       );
